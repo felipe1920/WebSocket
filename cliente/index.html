@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Exemplo de WebSocket</title>
+  </head>
+  <body>
+    <input type="text" id="input" />
+    <button onclick="enviarMensagem()">Enviar</button>
+    <ul id="mensagens"></ul>
+    <script>
+      const timestamp = new Date().getTime();
+      const socket = new WebSocket("ws://localhost:8080/?userId="+timestamp);
+
+      socket.addEventListener("open", function (event) {
+        console.log("Conexão estabelecida.");
+
+        // Exibe uma mensagem quando a conexão é estabelecida
+        const li = document.createElement("li");
+        li.textContent = "Conexão estabelecida.";
+        document.getElementById("mensagens").appendChild(li);
+      });
+
+      socket.addEventListener("message", function (event) {
+        console.log("Mensagem recebida: " + event.data);
+
+        // Exibe a mensagem recebida do servidor
+        const li = document.createElement("li");
+        li.textContent = event.data;
+        document.getElementById("mensagens").appendChild(li);
+      });
+
+      socket.addEventListener("close", function (event) {
+        console.log("Conexão encerrada.");
+
+        // Exibe uma mensagem quando a conexão é encerrada
+        const li = document.createElement("li");
+        li.textContent = "Conexão encerrada.";
+        document.getElementById("mensagens").appendChild(li);
+      });
+
+      function enviarMensagem() {
+        const input = document.getElementById("input");
+        const mensagem = input.value;
+
+        // Envia a mensagem para o servidor
+        socket.send(mensagem);
+
+        // Exibe a mensagem enviada pelo cliente
+        const li = document.createElement("li");
+        li.textContent = "Você enviou a seguinte mensagem: " + mensagem;
+        document.getElementById("mensagens").appendChild(li);
+
+        // Limpa o campo de entrada
+        input.value = "";
+      }
+    </script>
+  </body>
+</html>
